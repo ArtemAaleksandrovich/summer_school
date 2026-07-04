@@ -1,0 +1,108 @@
+openapi: 3.0.3
+info:
+  title: Auth API - Вертикаль
+  version: 1.0.0
+  description: Эндпоинты авторизации и управления сессией (FR-001 - FR-005).
+
+servers:
+  - url: https://api.vertical-climbing.ru/v1
+  - url: https://staging-api.vertical-climbing.ru/v1
+
+paths:
+  /auth/otp:
+    post:
+      summary: Запрос OTP-кода
+      operationId: requestOtp
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './models.yaml#/components/schemas/OtpRequest'
+      responses:
+        '200':
+          description: OTP отправлен.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/OtpResponse'
+        '400':
+          description: Неверный формат телефона.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+        '429':
+          description: Превышен лимит запросов (Rate Limit).
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+
+  /auth/verify:
+    post:
+      summary: Проверка OTP и получение токенов
+      operationId: verifyOtp
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './models.yaml#/components/schemas/VerifyRequest'
+      responses:
+        '200':
+          description: Успешная авторизация.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/TokenResponse'
+        '401':
+          description: Неверный код.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+        '410':
+          description: Срок действия OTP истек.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+
+  /auth/refresh:
+    post:
+      summary: Обновление access токена
+      operationId: refreshSession
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Токены обновлены.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/TokenResponse'
+        '401':
+          description: Refresh токен недействителен.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+
+  /auth/logout:
+    post:
+      summary: Выход из аккаунта
+      operationId: logout
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '../common/models.yaml#/components/parameters/IdempotencyKey'
+      responses:
+        '204':
+          description: Сессия завершена.
+        '401':
+          description: Не авторизован.

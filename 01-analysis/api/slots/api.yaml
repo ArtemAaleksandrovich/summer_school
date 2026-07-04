@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: Slots API - Вертикаль
+  version: 1.0.0
+  description: Эндпоинты просмотра расписания (FR-006 - FR-011).
+
+servers:
+  - url: https://api.vertical-climbing.ru/v1
+
+paths:
+  /slots:
+    get:
+      summary: Получить список слотов
+      operationId: getSlots
+      tags: [Slots]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: format
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [BOULDERING, ROPE]
+          style: form
+          explode: true
+          description: Семантика OR внутри массива (FR-010).
+        - name: instructor_id
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+          style: form
+          explode: true
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Список слотов.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/SlotListResponse'
+        '401':
+          description: Не авторизован.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+
+  /slots/{slot_id}:
+    get:
+      summary: Получить детали слота
+      operationId: getSlotById
+      tags: [Slots]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: slot_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Детали слота.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/Slot'
+        '401':
+          description: Не авторизован.
+        '410':
+          description: Слот не найден или удален.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'

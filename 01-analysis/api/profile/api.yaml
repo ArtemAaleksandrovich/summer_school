@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: Profile API - Вертикаль
+  version: 1.0.0
+  description: Эндпоинты профиля и отзывов (FR-022 - FR-024).
+
+servers:
+  - url: https://api.vertical-climbing.ru/v1
+
+paths:
+  /profile/me:
+    get:
+      summary: Получить мой профиль
+      operationId: getMyProfile
+      tags: [Profile]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Данные профиля.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/ClientProfile'
+        '401':
+          description: Не авторизован.
+
+  /reviews:
+    post:
+      summary: Оставить отзыв об инструкторе
+      operationId: createReview
+      tags: [Profile]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '../common/models.yaml#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './models.yaml#/components/schemas/ReviewCreateRequest'
+      responses:
+        '201':
+          description: Отзыв создан.
+        '400':
+          description: Ошибка валидации (например, время вышло).
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'

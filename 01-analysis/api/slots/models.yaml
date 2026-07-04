@@ -1,0 +1,79 @@
+components:
+  schemas:
+    Instructor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        photo_url:
+          type: string
+          format: uri
+        rating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+
+    RentalGear:
+      type: object
+      properties:
+        is_available:
+          type: boolean
+        shoes_price:
+          type: number
+          format: float
+        harness_price:
+          type: number
+          format: float
+        available_sizes:
+          type: array
+          items:
+            type: integer
+            minimum: 36
+            maximum: 45
+
+    Slot:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        start_time:
+          type: string
+          format: date-time
+          description: Время начала в UTC (ISO8601).
+        duration_minutes:
+          type: integer
+          example: 90
+        format:
+          type: string
+          enum: [BOULDERING, ROPE]
+        instructor:
+          $ref: '#/components/schemas/Instructor'
+        capacity:
+          type: integer
+        booked_count:
+          type: integer
+        rental_gear:
+          $ref: '#/components/schemas/RentalGear'
+        base_price:
+          type: number
+          format: float
+        address:
+          type: string
+        status:
+          type: string
+          enum: [SCHEDULED, CANCELLED_BY_ORGANIZER]
+
+    SlotListResponse:
+      type: object
+      properties:
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
+        meta:
+          $ref: '../common/models.yaml#/components/schemas/PaginationMeta'

@@ -1,0 +1,39 @@
+components:
+  schemas:
+    ClientProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        phone:
+          type: string
+        name:
+          type: string
+        is_regular:
+          type: boolean
+        late_cancellations_count:
+          type: integer
+        no_shows_count:
+          type: integer
+        blocked_until:
+          type: string
+          format: date-time
+          nullable: true
+
+    ReviewCreateRequest:
+      type: object
+      required:
+        - booking_id
+        - rating
+      properties:
+        booking_id:
+          type: string
+          format: uuid
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+          maxLength: 500

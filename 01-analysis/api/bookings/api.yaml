@@ -1,0 +1,111 @@
+openapi: 3.0.3
+info:
+  title: Bookings API - Вертикаль
+  version: 1.0.0
+  description: Эндпоинты управления бронями (FR-012 - FR-021).
+
+servers:
+  - url: https://api.vertical-climbing.ru/v1
+
+paths:
+  /bookings:
+    get:
+      summary: Получить мои брони
+      operationId: getMyBookings
+      tags: [Bookings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, completed, cancelled]
+      responses:
+        '200':
+          description: Список броней.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/BookingListResponse'
+
+    post:
+      summary: Создать бронь
+      operationId: createBooking
+      tags: [Bookings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '../common/models.yaml#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './models.yaml#/components/schemas/BookingCreateRequest'
+      responses:
+        '201':
+          description: Бронь успешно создана.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/Booking'
+        '400':
+          description: Ошибка валидации (например, дедлайн пройден).
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+        '403':
+          description: Клиент заблокирован.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+        '409':
+          description: Слот заполнен (SLOT_FULL).
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+        '422':
+          description: Нет снаряжения нужного размера.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+
+  /bookings/{booking_id}:
+    delete:
+      summary: Отменить бронь
+      operationId: cancelBooking
+      tags: [Bookings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '../common/models.yaml#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Бронь отменена.
+          content:
+            application/json:
+              schema:
+                $ref: './models.yaml#/components/schemas/Booking'
+        '403':
+          description: Отмена запрещена (например, отменена организатором).
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'
+        '410':
+          description: Бронь не найдена или уже неактивна.
+          content:
+            application/json:
+              schema:
+                $ref: '../common/models.yaml#/components/schemas/Error'

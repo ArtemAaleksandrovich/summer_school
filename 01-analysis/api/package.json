@@ -1,0 +1,13 @@
+{
+  "name": "vertical-api-docs",
+  "version": "1.0.0",
+  "description": "OpenAPI 3.0.3 спецификация для клиентского приложения скалодрома Вертикаль",
+  "scripts": {
+    "lint": "redocly lint",
+    "bundle": "redocly bundle -o dist/openapi.yaml",
+    "preview": "redocly preview-docs"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.12.0"
+  }
+}

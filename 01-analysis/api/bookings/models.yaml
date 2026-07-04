@@ -1,0 +1,51 @@
+components:
+  schemas:
+    BookingCreateRequest:
+      type: object
+      required:
+        - slot_id
+        - rental_gear_needed
+      properties:
+        slot_id:
+          type: string
+          format: uuid
+        rental_gear_needed:
+          type: boolean
+        shoe_size:
+          type: integer
+          minimum: 36
+          maximum: 45
+          description: Обязательно, если rental_gear_needed = true.
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        slot_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [CONFIRMED, CANCELLED, LATE_CANCELLED, CANCELLED_BY_ORGANIZER, COMPLETED]
+        rental_gear_needed:
+          type: boolean
+        shoe_size:
+          type: integer
+        total_price:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+        cancellation_reason:
+          type: string
+
+    BookingListResponse:
+      type: object
+      properties:
+        bookings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Booking'

@@ -1,0 +1,23 @@
+apis:
+  auth:
+    root: auth/api.yaml
+  slots:
+    root: slots/api.yaml
+  bookings:
+    root: bookings/api.yaml
+  profile:
+    root: profile/api.yaml
+
+rules:
+  no-unresolved-refs: error
+  no-unused-components: warn
+  operation-operationId-unique: error
+  no-ambiguous-paths: error
+  path-params-defined: error
+
+theme:
+  openapi:
+    theme:
+      colors:
+        primary:
+          main: "#0055A5" 

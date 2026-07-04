@@ -1,0 +1,55 @@
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Уникальный ключ для идемпотентности мутационных запросов (FR-016).
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Строковый код ошибки (например, SLOT_FULL, INVALID_OTP).
+        message:
+          type: string
+          description: Человекочитаемое описание ошибки.
+        details:
+          type: object
+          description: Дополнительные детали ошибки, зависящие от кода.
+          additionalProperties: true
+
+    PaginationParams:
+      type: object
+      properties:
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 20
+        offset:
+          type: integer
+          minimum: 0
+          default: 0
+
+    PaginationMeta:
+      type: object
+      properties:
+        total:
+          type: integer
+        has_more:
+          type: boolean

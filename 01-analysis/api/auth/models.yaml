@@ -1,0 +1,44 @@
+components:
+  schemas:
+    OtpRequest:
+      type: object
+      required:
+        - phone
+      properties:
+        phone:
+          type: string
+          pattern: '^\+7\d{10}$'
+          example: "+79001234567"
+
+    OtpResponse:
+      type: object
+      properties:
+        otp_id:
+          type: string
+          format: uuid
+        ttl:
+          type: integer
+          description: Время жизни кода в секундах.
+
+    VerifyRequest:
+      type: object
+      required:
+        - otp_id
+        - code
+      properties:
+        otp_id:
+          type: string
+          format: uuid
+        code:
+          type: string
+          pattern: '^\d{6}$'
+
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        expires_in:
+          type: integer
