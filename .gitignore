@@ -16,3 +16,4 @@ client/java_pid*.hprof
 .env
 .env.*
 
+node_modules

@@ -9,7 +9,6 @@
 
 **Экраны:** SCR-001 (Регистрация / Вход)
 
-```mermaid
 sequenceDiagram
     participant C as Клиент
     participant App as Приложение

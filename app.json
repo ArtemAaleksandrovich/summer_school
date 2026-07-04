@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "vertical-mobile",
+    "slug": "vertical-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vertical.mobile"
+    },
+    "android": {
+      "package": "com.vertical.mobile"
+    }
+  }
+}
